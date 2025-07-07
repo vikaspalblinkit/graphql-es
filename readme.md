@@ -86,7 +86,24 @@ On startup, the app will:
 * Create the `compensations` index using `index.json` (if not exists)
 * Bulk-upload all `.csv` files from the `dataset/` folder to Elasticsearch
 
----
+--- 
+
+## DB TradeOff
+🔍 Why Elasticsearch Over PostgreSQL 
+- Optimized for Search & Analytics
+Elasticsearch is built for full-text search and analytical queries, making it ideal for use cases like filtering job titles, locations, and salary ranges.
+
+- High Performance on Large Datasets
+Uses inverted indexing and columnar storage to deliver faster query performance over large volumes of data compared to traditional RDBMS.
+
+- Schema Flexibility
+Supports semi-structured or evolving data models using dynamic mappings, avoiding the need for rigid schema definitions like in PostgreSQL.
+
+- Advanced Aggregations
+Provides out-of-the-box support for complex aggregations (e.g., average, min, max salary per location) that are performant even at scale.
+
+- Real-Time Query Capabilities
+Near real-time indexing and search capability allows immediate availability of uploaded or updated data for querying.
 
 ## 🖼️ Screenshots
 
