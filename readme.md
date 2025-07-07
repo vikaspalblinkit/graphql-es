@@ -74,6 +74,7 @@ podman run -d \
 ### 4. Run the Go API
 
 ```bash
+gqlgen generate
 go mod tidy
 go run .
 ```
