@@ -87,6 +87,27 @@ On startup, the app will:
 
 ---
 
+## 🖼️ Screenshots
+
+Below are some screenshots of the application in action:
+
+![Elasticsearch & Kibana Running](https://github.com/user-attachments/assets/9fb19774-a71d-47d9-b836-98f40193304a)
+*Elasticsearch and Kibana containers running in Podman*
+
+![Kibana Dashboard](https://github.com/user-attachments/assets/67884008-220b-40ef-8657-e480728609d5)
+*Kibana dashboard showing loaded compensation data*
+
+![GraphQL Playground](https://github.com/user-attachments/assets/ba668ecf-373b-459d-b1dd-8fb1d9ca31d0)
+*GraphQL Playground for querying compensation data*
+
+![REST API Example](https://github.com/user-attachments/assets/9a5f1b9e-9e43-48b3-a716-82a8f490a015)
+*Example REST API request and response*
+
+![Elasticsearch Index Mapping](https://github.com/user-attachments/assets/9f946182-7f9c-48c9-bc07-a8756c9e8e05)
+*Elasticsearch index mapping for compensation data*
+
+---
+
 ## 📡 API Usage
 
 ### 🔹 GraphQL
