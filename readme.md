@@ -28,7 +28,7 @@ Built using **Go**, [gqlgen](https://gqlgen.com/), and the official Elasticsearc
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/vikaspalblinkit/graphql-es
 cd graphql-es
 ```
 
