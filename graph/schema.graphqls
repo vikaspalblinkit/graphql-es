@@ -1,0 +1,28 @@
+type Compensation {
+  id: String!
+  timestamp: String
+  age_range: String
+  industry: String
+  job_title: String
+  annual_salary: Float
+  currency: String
+  location: String
+  experience: String
+  job_context: String
+  other_currency: String
+}
+
+type Query {
+  compensations(
+    id: String
+    salaryGte: Float
+    location: String
+    jobTitleMatch: String
+    sortBy: String
+    sortOrder: String
+    limit: Int
+    fields: [String!]
+  ): [Compensation]
+
+  compensation(id: ID!): Compensation
+}
