@@ -1,89 +1,47 @@
-# Compensation Data GraphQL & REST API
+# 🚀 Compensation Data API (GraphQL + REST)
 
-This project provides a GraphQL and REST API for querying compensation data stored in Elasticsearch. Built with Go, gqlgen, and the official Elasticsearch Go client.
+This project provides a **GraphQL** and **REST API** for querying compensation data stored in **Elasticsearch**.
+Built using **Go**, [gqlgen](https://gqlgen.com/), and the official Elasticsearch Go client.
 
-## Features
-- GraphQL API with filtering, sorting, and sparse fieldset support
-- REST endpoint for fetching a single record with sparse fieldset
-- Elasticsearch as the backend data store
-- Dockerized setup for easy local development
+---
 
-## Prerequisites
-- Go 1.18+
-- Docker & Docker Compose
-- (Optional) Elasticsearch and Kibana (if not using Docker Compose)
+## ✅ Features
 
-## Setup
+* 🔍 GraphQL API with filtering, sorting, and sparse fieldset support
+* 📌 REST endpoint to fetch a single record with selected fields
+* 📦 Automatically uploads CSV datasets to Elasticsearch on startup
+* 📊 Elasticsearch + Kibana setup using **Podman**
+* 🧩 Modular Go codebase, clean structure
 
-### 1. Clone the repository
-```sh
+---
+
+## 🧰 Prerequisites
+
+* Go 1.18+
+* [Podman](https://podman.io/) (or Docker if preferred)
+* Git
+
+---
+
+## 🛠 Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
 git clone <your-repo-url>
 cd graphql-es
 ```
 
-### 2. Start Elasticsearch (and Kibana) with Docker Compose
-```sh
-docker-compose up -d
-```
-- Elasticsearch will be available at http://localhost:9200
-- Kibana (optional) at http://localhost:5601
+---
 
-### 3. Build and Run the Go API
-```sh
-go mod tidy
-go run main.go
-```
-- The API will start at http://localhost:8087
+### 2. Start Elasticsearch & Kibana with Podman
 
-## API Usage
+```bash
+# Create a custom network (run once)
+podman network create esnet
 
-### GraphQL
-- Playground: http://localhost:8087/
-- Endpoint: http://localhost:8087/query
-
-Example query:
-```graphql
-query {
-  compensations(id: "<doc_id>", salaryGte: 120000, location: "New York") {
-    id
-    job_title
-    annual_salary
-  }
-}
-```
-- You can request only the fields you need (sparse fieldset).
-
-### REST
-- Endpoint: `GET /compensation_data?id=<doc_id>&fields=field1,field2`
-
-Example:
-```
-curl "http://localhost:8087/compensation_data?id=abc123&fields=timestamp,job_title,salary"
-```
-- Returns only the requested fields for the given record.
-
-## Data Loading
-- Place your CSV files in the `dataset/` directory.
-- The API will auto-upload data to Elasticsearch on startup.
-- Index mapping is defined in `index.json`.
-
-## Troubleshooting
-- If Elasticsearch runs out of memory, increase Docker resources or adjust JVM settings in `docker-compose.yaml`.
-- To reset data: `docker-compose down -v && docker-compose up -d`
-
-## Development
-- Update GraphQL schema in `graph/schema.graphqls` and run `go run github.com/99designs/gqlgen generate` to regenerate models/resolvers.
-- Main code locations:
-  - GraphQL: `graph/`
-  - Elasticsearch client: `internal/elastic/`
-  - REST handler: `rest_handlers.go`
-
-## License
-MIT
-
-
-
-  podman run -d \
+# Start Elasticsearch
+podman run -d \
   --name elasticsearch \
   --network esnet \
   -p 9200:9200 \
@@ -92,10 +50,163 @@ MIT
   -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" \
   docker.elastic.co/elasticsearch/elasticsearch:8.13.4
 
-
-  podman run -d \
+# Start Kibana
+podman run -d \
   --name kibana \
   --network esnet \
   -p 5601:5601 \
   -e "ELASTICSEARCH_HOSTS=http://elasticsearch:9200" \
   docker.elastic.co/kibana/kibana:8.13.4
+```
+
+> ✅ Elasticsearch: [http://localhost:9200](http://localhost:9200)
+> ✅ Kibana: [http://localhost:5601](http://localhost:5601)
+
+---
+
+### 3. Prepare Dataset
+
+* Place all your `.csv` files in the `dataset/` directory.
+* Each file should follow a consistent format with fields like `job_title`, `annual_salary`, `location`, etc.
+
+---
+
+### 4. Run the Go API
+
+```bash
+go mod tidy
+go run .
+```
+
+> ✅ The API runs on: [http://localhost:8085](http://localhost:8085)
+
+On startup, the app will:
+
+* Create the `compensations` index using `index.json` (if not exists)
+* Bulk-upload all `.csv` files from the `dataset/` folder to Elasticsearch
+
+---
+
+## 📡 API Usage
+
+### 🔹 GraphQL
+
+* **Playground**: [http://localhost:8085/](http://localhost:8085/)
+* **Endpoint**: `/query`
+
+#### Example GraphQL Query
+
+```graphql
+query {
+  compensations(
+    salaryGte: 120000
+    location: "New York"
+    sortBy: "annual_salary"
+    sortOrder: "desc"
+    limit: 5
+  ) {
+    id
+    job_title
+    annual_salary
+    location
+    currency
+  }
+}
+```
+
+You can:
+
+* Filter by fields (e.g., salary, location, title)
+* Sort results
+* Limit output fields (sparse fieldset)
+
+---
+
+### 🔹 REST Endpoint
+
+#### GET `/compensation_data?id=<doc_id>&fields=field1,field2,...`
+
+##### Example Request:
+
+```bash
+curl "http://localhost:8085/compensation_data?id=abc123&fields=job_title,annual_salary"
+```
+
+##### Example Response:
+
+```json
+{
+  "job_title": "Software Engineer",
+  "annual_salary": 140000
+}
+```
+
+> Retrieves a single document by ID with optional field filtering.
+
+---
+
+## 📁 Project Structure
+
+```
+graphql-es/
+├── main.go                  # App entry point
+├── rest_handler.go          # REST endpoint logic
+├── index.json               # Elasticsearch index mapping
+├── dataset/                 # Place your CSV files here
+├── go.mod / go.sum          # Go module dependencies
+├── graph/                   # GraphQL schema, resolvers
+│   ├── schema.graphqls
+│   ├── generated.go
+│   ├── model/
+│   └── resolver.go
+└── internal/
+    └── elastic/             # Elasticsearch client logic
+```
+
+---
+
+## 🧪 Troubleshooting
+
+* **Elasticsearch crashed with code 137?**
+  ➤ Increase Podman memory or reduce `ES_JAVA_OPTS` to `-Xms256m -Xmx256m`.
+
+* **To clean everything and restart:**
+
+```bash
+podman stop elasticsearch kibana
+podman rm elasticsearch kibana
+podman volume prune
+```
+
+---
+
+## 👨‍💼 Development Guide
+
+### Update GraphQL Schema
+
+Edit the schema in:
+
+```bash
+graph/schema.graphqls
+```
+
+Then run:
+
+```bash
+go run github.com/99designs/gqlgen generate
+```
+
+This regenerates `model` and `resolver` files.
+
+---
+
+## 📜 License
+
+MIT
+
+---
+
+## 🤝 Author
+
+Built with ❤️ by **Vikas Pal**
+Feel free to contribute, raise issues, or suggest improvements!
