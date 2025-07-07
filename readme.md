@@ -117,6 +117,9 @@ High Level Design
 ![Elasticsearch & Kibana Running](https://github.com/user-attachments/assets/9fb19774-a71d-47d9-b836-98f40193304a)
 *Elasticsearch and Kibana containers running in Podman*
 
+![Kibana Dashboard](https://github.com/user-attachments/assets/87967f41-b6c6-4a22-ba0a-1d2822e3dc55)
+
+
 ![Kibana Dashboard](https://github.com/user-attachments/assets/67884008-220b-40ef-8657-e480728609d5)
 *Kibana dashboard showing loaded compensation data*
 
